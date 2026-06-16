@@ -1,0 +1,4 @@
+"id_pessoas","nome_pessoa","cpf_pessoa","datanasc_pessoa","endereco_pessoa","id_documentos","id_pessoas","comprovantResidencia_documentos","curriculo_documentos","certNasc_documentos"
+1,Kauã Galeno,"123.456.789-20","2003-10-09","Av. Brasil, 67",1,1,/arquivos/comp_residencia_1.pdf,/arquivos/curriculo_1.pdf,/arquivos/certidao_1.pdf
+2,Ana Maria,"321.789.456-30","1992-09-10","Av. Colômbia, 76",2,2,/arquivos/comp_residencia_2.pdf,/arquivos/curriculo_2.pdf,/arquivos/certidao_2.pdf
+3,Kaneda Kakashi,"123.654.789-40","1989-04-19","Av. Konoha, 60",3,3,/arquivos/comp_residencia_3.pdf,/arquivos/curriculo_3.pdf,/arquivos/certidao_3.pdf
