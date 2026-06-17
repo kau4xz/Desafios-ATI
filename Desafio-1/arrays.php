@@ -40,11 +40,11 @@ function achar_numero2($parametro, $listaDeNumeros){
     } else {
         foreach($listaDeNumeros as $indice => $valor){
             //Vou deixar o var_dump comentado para não atrapalhar a vizualização da saída 
-            //var_dump($listaDeNumeros[$indice]);
+            var_dump($listaDeNumeros[$indice]);
 
             if ($parametro === $valor){
                 echo "O número $parametro está no índice $indice";
-                return;
+               return;
             }
        
         }
