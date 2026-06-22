@@ -34,4 +34,4 @@ function exibirSituacao($matriz, $linha, $coluna){
 
 }
 
-exibirSituacao($matriz, 2, 1);
+exibirSituacao($matriz, 9, 1);
