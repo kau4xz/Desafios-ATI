@@ -13,8 +13,8 @@ select count(*)
 from tb_inscricoes_cnh_social
 
 -- 3. Exibir quantos municípios distintos existem na base.
-SELECT COUNT(DISTINCT cidade) AS total_municipios 
-FROM tb_inscricoes_cnh_social;
+select count(distinct cidade) as total_municipios 
+from tb_inscricoes_cnh_social;
 
 -- 4. Listar apenas candidatos PCD.
 
@@ -35,12 +35,12 @@ where str_to_date(data_nascimento, '%d/%m/%Y') >= date_sub(CURDATE(), interval 2
 	and str_to_date(data_nascimento, '%d/%m/%Y') <= date_sub(CURDATE(), interval 18 YEAR); 
 
 -- 7. Exibir os candidatos com idade acima de 60 anos.
-SELECT * FROM tb_inscricoes_cnh_social
-WHERE STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 60 YEAR)
+select * from tb_inscricoes_cnh_social
+where str_to_date(data_nascimento, '%d/%m/%Y') <= date_sub(CURDATE(), interval 60 YEAR)
 order by STR_TO_DATE(data_nascimento, '%d/%m/%Y') desc
 
 -- 8. Listar os 100 primeiros registros cadastrados.
-SELECT * FROM tb_inscricoes_cnh_social
+select * from tb_inscricoes_cnh_social
 ORDER BY STR_TO_DATE(created_at, '%d/%m/%Y %H:%i:%s') ASC 
 LIMIT 100;
 
@@ -117,6 +117,14 @@ limit 10
 
 -- 18. Calcular a média de inscrições por município.
 
+SELECT 
+    cidade, 
+    COUNT(*) AS inscricoes,
+    AVG(COUNT(*)) OVER() AS media_geral
+FROM tb_inscricoes_cnh_social
+GROUP BY cidade
+ORDER BY inscricoes ASC;
+
 -- 19. Identificar o município com maior número de inscrições.
 select cidade, count(*) as inscricoes
 from tb_inscricoes_cnh_social
@@ -144,6 +152,21 @@ group by dias
 order by percentual desc
 
 -- 21. Calcular o percentual de inscrições por faixa etária.
+
+SELECT 
+    CASE
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 24 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 18 YEAR) THEN '18 a 24'
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 34 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 25 YEAR) THEN '25 a 34'
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 44 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 35 YEAR) THEN '35 a 44'
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 59 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 45 YEAR) THEN '45 a 59'
+        ELSE '60 ou mais'
+    END AS faixa_etaria,
+    COUNT(*) AS inscritos_faixa_etaria,
+    ROUND((COUNT(*) * 100.0) / (SELECT COUNT(*) FROM tb_inscricoes_cnh_social), 2) AS percentual_faixa_etaria
+FROM tb_inscricoes_cnh_social
+GROUP BY faixa_etaria
+ORDER BY faixa_etaria;
+
 -- 22. Calcular o percentual de inscritos PCD e Não PCD.
 
 select eh_pcd, count(*) as total_eh_pcd, round((count(*) * 100.0) / (select count(*) from tb_inscricoes_cnh_social), 2) as percentual
@@ -157,6 +180,21 @@ group by cidade
 order by percentual desc
 
 -- 24.Identificar qual faixa etária representa a maior parcela dos inscritos.
+
+SELECT 
+    CASE
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 24 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 18 YEAR) THEN '18 a 24'
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 34 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 25 YEAR) THEN '25 a 34'
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 44 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 35 YEAR) THEN '35 a 44'
+        WHEN STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 59 YEAR) AND STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 45 YEAR) THEN '45 a 59'
+        ELSE '60 ou mais'
+    END AS faixa_etaria,
+    COUNT(*) AS inscritos_faixa_etaria,
+    ROUND((COUNT(*) * 100.0) / (SELECT COUNT(*) FROM tb_inscricoes_cnh_social), 2) AS percentual_faixa_etaria
+FROM tb_inscricoes_cnh_social
+GROUP BY faixa_etaria
+ORDER BY percentual_faixa_etaria desc
+LIMIT 1;
 
 -- 25. Calcular a participação percentual dos 5 municípios mais inscritos.
 select cidade, count(*) as total_inscricoes, round((count(*) * 100.0) / (select count(*) from tb_inscricoes_cnh_social), 5) as percentual
@@ -181,13 +219,47 @@ limit 5
 -- Parte 5 - CASE e Regras de Negócio
 
 -- 31. Criar uma coluna calculada chamada faixa etaria utilizando CASE.
+
+SELECT
+case
+	when STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 24 YEAR) and STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 18 YEAR) then '18 a 24'
+  	when STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 34 YEAR) and STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 25 YEAR) then '25 a 34'
+    when STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 44 YEAR) and STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 35 YEAR) then '35 a 44'
+    when STR_TO_DATE(data_nascimento, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 59 YEAR) and STR_TO_DATE(data_nascimento, '%d/%m/%Y') <= DATE_SUB(CURDATE(), INTERVAL 45 YEAR) then '45 a 59'
+  else '60 ou mais'
+end as faixa_etaria, COUNT(*) as total_faixa_etaria
+from tb_inscricoes_cnh_social
+group by faixa_etaria;
+
 -- 32. Criar uma coluna calculada chamada situacao_pcd.
--- 33. Classificar municípios utilizando CASE (Grande, Médio e Pequeno Porte).
+
+-- 33. Classificar municípios utilizando CASE (Grande, Médio e Pequeno Porte). -- criterio utilizado: pequeno porte <= 1000 inscritos, medio porte > 1000 and <= 20000, grande porte > 20000 
+
+SELECT cidade, COUNT(*) AS total_inscritos,
+	CASE 
+		WHEN COUNT(*) <= 1000 THEN 'pequeno porte'
+		WHEN COUNT(*) BETWEEN  1000 AND  20000  THEN 'medio porte'
+	ELSE 'Grande Porte'
+END AS porte_cidade
+FROM tb_inscricoes_cnh_social
+GROUP BY cidade
+ORDER BY porte_cidade;
+ 
 -- 34. Exibir apenas municípios classificados como Grande Porte.
+
+SELECT cidade, COUNT(*) AS total_inscritos,
+	CASE 
+		WHEN COUNT(*) <= 1000 THEN 'pequeno porte'
+		WHEN COUNT(*) BETWEEN  1000 AND  20000  THEN 'medio porte'
+	ELSE 'Grande Porte'
+END AS porte_cidade
+FROM tb_inscricoes_cnh_social
+GROUP BY cidade
+HAVING count(*) > 20000
+ORDER BY porte_cidade;
+ 
+
 -- 35. Contar quantos municípios existem em cada classificação.
-
-
-
 
 -- Parte 6 - Desafios Avançados
 
@@ -215,8 +287,6 @@ order by inscricoes asc
 limit 1
 
 -- 41. Calcular o acumulado de inscrições por dia.
-
-
 -- 42. Comparar cada município com a média estadual de inscrições.
 -- 43. Exibir municípios acima da média estadual.
 -- 44. Exibir municípios abaixo da média estadual.
