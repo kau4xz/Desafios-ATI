@@ -1,0 +1,20 @@
+use desafio_3
+
+create table pessoas (
+	id_pessoas INT primary key,
+	nome_pessoa VARCHAR(50),
+	cpf_pessoa VARCHAR(14),
+	datanasc_pessoa DATE,
+	endereco_pessoa VARCHAR(50)
+);
+
+
+create table documentos (
+	id_documentos INT primary key,
+	comprovantResidencia_documentos VARCHAR(50),
+	curriculo_documentos VARCHAR(50),
+	certNasc_documentos VARCHAR(50), 
+	foreign key(pessoas) references pessoas (id_pessoas)
+);
+
+
