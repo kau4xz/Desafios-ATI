@@ -1,9 +1,6 @@
 <?php 
 /*
-$servername = "localhost";
-$username = "nezha";
-$password = "nezh@dmin0910";
-$dbname = "db_cnh_social";
+
 
 try {
     // 1. Cria a string de conexão (DSN - Data Source Name)
@@ -38,16 +35,8 @@ try {
 
 
 
-
-
-$host = 'localhost';
-$username = 'nezha';
-$password = 'nezh@dmin0910';
-$dbname = 'db_cnh_social';
-
 // criando a conexão
-$mysqli = new mysqli($host, $username, $password, $dbname);
-
+include("config.php");
 // verficando a conexão
 if ($mysqli->connect_error){
     die("Falha na conexão: ".$mysqli->connect_error);
