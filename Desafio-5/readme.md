@@ -216,7 +216,19 @@ GROUP BY cidade
 ORDER BY total_inscritos DESC;
 
 -- 27. Gerar relatório contendo Faixa etária, Quantidade e Percentual. 
-	
+		SELECT 
+    CASE
+        when data_nascimento >= DATE_SUB(CURDATE(), INTERVAL 24 YEAR) and data_nascimento  <= DATE_SUB(CURDATE(), INTERVAL 18 YEAR) then '18 a 24'
+	  	when data_nascimento >= DATE_SUB(CURDATE(), INTERVAL 34 YEAR) and data_nascimento  <= DATE_SUB(CURDATE(), INTERVAL 25 YEAR) then '25 a 34'
+	    when data_nascimento >= DATE_SUB(CURDATE(), INTERVAL 44 YEAR) and data_nascimento  <= DATE_SUB(CURDATE(), INTERVAL 35 YEAR) then '35 a 44'
+	    when data_nascimento >= DATE_SUB(CURDATE(), INTERVAL 59 YEAR) and data_nascimento  <= DATE_SUB(CURDATE(), INTERVAL 45 YEAR) then '45 a 59'
+	    ELSE "60 ou mais"
+    END AS faixa_etaria,
+    COUNT(*) AS inscritos_faixa_etaria,
+    ROUND((COUNT(*) * 100.0) / (SELECT COUNT(*) FROM tb_inscricoes_cnh_social), 2) AS percentual_faixa_etaria
+FROM tb_inscricoes_cnh_social
+GROUP BY faixa_etaria
+ORDER BY percentual_faixa_etaria desc;
 
 -- 28. Gerar relatório diário de inscrições contendo Data, Quantidade e Percentual sobreo total.
 SELECT 
