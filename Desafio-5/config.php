@@ -1,18 +1,17 @@
 <?php
-    define('HOST', 'localhost');
-    define('USER', 'nezha');
-    define('PASS', 'nezh@dmin0910');
-    define('BASE', 'db_cnh_social');
-    
-    /*$host = getenv(HOST);
-    $user = getenv(USER);
-    $pass = getenv(PASS);
-    $base = getenv(BASE);*/
+
+    $env = parse_ini_file(__DIR__ . '/.env');
+    $host = $env['HOST'];
+    $user = $env['USER'];
+    $pass = $env['PASS'];
+    $base = $env['BASE'];
+
+   
 
     //criando conexão com mysqli
     // $connM = new mysqli($host, $user, $pass, $base);
 
-    $connM = new mysqli(HOST, USER, PASS, BASE);
+    $connM = new mysqli($host, $user, $pass, $base);
 
     //echo "conexão realizada com sucesso";
 
@@ -22,8 +21,8 @@
     }
 
     //criando conexão com PDO
-    $dsn = "mysql:host=" . HOST . ";dbname=" . BASE . ";charset=utf8mb4";
-    $connP = new PDO($dsn, USER, PASS);
+    $dsn = "mysql:host=" . $host . ";dbname=" . $base . ";charset=utf8mb4";
+    $connP = new PDO($dsn, $user, $pass);
 
     //verificando a conexão PDO
     
