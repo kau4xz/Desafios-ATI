@@ -1,20 +1,20 @@
 <?php 
 
 // criando a conexão
-include("config.php");
+include __DIR__ . '/../db/config.php';
 
 //echo "conexão realizada com sucesso";
 
 
 
 // primeira query
-$query1 = $connM->query("SELECT 
-	date(created_at), count(*) AS total_inscricoes,
-	round(count(*) * 100 / sum(count(*)) OVER (), 2) AS percentual
+$query1 = $connM->query("SELECT
+	cidade AS municipio,
+	count(*) AS total_inscritos,
+	round(count(*) * 100 / sum(count(*)) OVER(), 2) AS percentual
 FROM tb_inscricoes_cnh_social
-GROUP BY date(created_at)
-ORDER BY total_inscricoes DESC
-LIMIT 30");
+GROUP BY cidade
+ORDER BY total_inscritos DESC");
 //print_r($query1);
 
 
@@ -22,7 +22,7 @@ if ($query1->num_rows > 0) {
     
     echo "<table border='1' style='border-collapse: collapse; width: 100%; text-align: left;'>";
     echo "<tr>
-            <th>Data de </th>
+            <th>Municipio</th>
             <th>Total de Inscritos</th>
             <th>Percentual</th>
           </tr>";
@@ -30,8 +30,8 @@ if ($query1->num_rows > 0) {
     
     while($row = $query1->fetch_assoc()) {
         echo "<tr>";
-        echo "<td>" . htmlspecialchars($row["date(created_at)"]) . "</td>";
-        echo "<td>" . htmlspecialchars($row["total_inscricoes"]) . "</td>";
+        echo "<td>" . htmlspecialchars($row["municipio"]) . "</td>";
+        echo "<td>" . htmlspecialchars($row["total_inscritos"]) . "</td>";
         echo "<td>" . htmlspecialchars($row["percentual"]) . "</td>";
         echo "</tr>";
     }

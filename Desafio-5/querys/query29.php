@@ -1,7 +1,7 @@
 <?php 
 
 // criando a conexão
-include("config.php");
+include __DIR__ . '/../db/config.php';
 
 //echo "conexão realizada com sucesso";
 

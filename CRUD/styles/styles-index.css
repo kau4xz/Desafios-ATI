@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que os paddings não quebrem a largura da tela */
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #f3f4f6;
+    /* Removi o padding: 2rem daqui, senão o header ficaria com uma borda branca em volta */
+}
+
+/* --- HEADER BASE --- */
+.header {
+    background-color: #1f2937;
+    padding-inline: 10px;
+}
+
+.nav {
+    max-width: 1280px;
+    height: 60px;
+    margin-inline: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 32px; /* Diminuí um pouco para não estourar o cabeçalho */
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* --- ESTILOS DO MENU MOBILE (Padrão) --- */
+.hamburger {
+    border: none;
+    background: none;
+    border-top: 3px solid #fff;
+    cursor: pointer;
+    display: block; /* Por padrão (em telas pequenas), ele aparece */
+    z-index: 1000; /* Garante que o botão fica acima do menu escuro */
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    display: block;
+    width: 30px;
+    border-top: 3px solid #fff;
+    margin-top: 5px;
+}
+
+.nav-list {
+    position: fixed;
+    top: 0;
+    left: -100vw; /* Deixa o menu escondido fora da tela à esquerda */
+    width: 100vw;
+    height: 100vh;
+    background-color: #1f2937;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza os links no meio da tela */
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+    transition: left 0.3s ease; /* Animação suave ao abrir */
+    z-index: 999;
+}
+
+.nav-list.active {
+    left: 0; /* Quando o JS adicionar esta classe, o menu desliza para a tela */
+}
+
+.nav-list a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.nav-list a:hover {
+    color: #3b82f6; /* Azul ao passar o rato */
+}
+
+/* --- ESTILOS DO MENU COMPUTADOR (Telas maiores que 768px) --- */
+@media (min-width: 768px) {
+    .hamburger {
+        display: none; /* Esconde o botão hamburger no PC */
+    }
+
+    .nav-list {
+        position: static; /* Tira o ecrã inteiro */
+        width: auto;
+        height: auto;
+        flex-direction: row; /* Coloca os links lado a lado */
+        justify-content: flex-end;
+        background-color: transparent; /* Remove o fundo do menu */
+    }
+
+    .nav-list a {
+        font-size: 16px; /* Volta o texto para um tamanho normal */
+    }
+}
